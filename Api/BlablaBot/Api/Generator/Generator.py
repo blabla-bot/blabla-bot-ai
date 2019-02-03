@@ -22,8 +22,11 @@ class Generator:
             self.save_model()
             print("Saving to cache")
 
-    def generate(self):
-        return self.__text_model.make_sentence()
+    def generate(self, sentence_number = 1):
+        sentences = []
+        for _ in range(sentence_number):
+            sentences.append(self.__text_model.make_sentence())
+        return sentences
 
     def save_model(self):
         with open(self.__model_name, 'w') as file:
