@@ -1,5 +1,8 @@
 const path = require('path');
 const merge = require('webpack-merge');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const cssnano = require("cssnano");
 
 module.exports = (env) => {
   // Configuration in common to both client-side and server-side bundles
@@ -36,12 +39,58 @@ module.exports = (env) => {
   // Configuration for client-side bundle suitable for running in browsers
   const clientBundleConfig = {
     entry: {
-      'client': './src/client/client.tsx'
+      'client': './src/client/client.tsx',
     },
     output: {
       path: path.join(__dirname, "./static/dist")
     },
-    devtool: "source-map"
+    module: {
+      rules: [{
+        test: /\.(scss)$/,
+        use: [{
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              minimize: true
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: function () {
+                return [
+                  require('autoprefixer')
+                ];
+              }
+            }
+          },
+          {
+            loader: 'sass-loader'
+          }
+        ]
+      }]
+    },
+    devtool: "source-map",
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+        chunkFilename: "[id].css"
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessor: cssnano,
+        cssProcessorOptions: {
+          options: {
+            discardComments: {
+              removeAll: true,
+            },
+            safe: true,
+          },
+        },
+        canPrint: false,
+      })
+    ]
   };
 
   // Configuration for server-side (prerendering) bundle suitable for running in Node
@@ -61,8 +110,63 @@ module.exports = (env) => {
     devtool: "none"
   };
 
+  const stylesConfig = {
+    entry: {
+      'client': './src/client/styles.js',
+    },
+    mode: !(env && env.prod) ? "development" : "production",
+    output: {
+      path: path.join(__dirname, "./static/dist")
+    },
+    module: {
+      rules: [{
+        test: /\.(scss)$/,
+        use: [{
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: function () {
+                return [
+                  require('autoprefixer')
+                ];
+              }
+            }
+          },
+          {
+            loader: 'sass-loader'
+          }
+        ]
+      }]
+    },
+    devtool: "source-map",
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+        chunkFilename: "[id].css"
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessor: cssnano,
+        cssProcessorOptions: {
+          options: {
+            discardComments: {
+              removeAll: true,
+            },
+            safe: true,
+          },
+        },
+        canPrint: false,
+      })
+    ]
+  };
+
   return [
     merge(sharedConfig, clientBundleConfig),
-    merge(sharedConfig, serverBundleConfig)
+    merge(sharedConfig, serverBundleConfig),
+    stylesConfig
   ];
 };

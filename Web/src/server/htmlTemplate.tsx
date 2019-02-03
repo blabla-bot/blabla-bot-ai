@@ -4,6 +4,7 @@ const HtmlTemplate: React.FC = ({ children }) => (
   <html>
     <head>
       <title>Blabla-bot</title>
+      <link rel="stylesheet" href="/static/dist/client.css" />
     </head>
     <body>
       <div id="react-app">{children}</div>
