@@ -4,7 +4,7 @@ from pathlib import Path
 
 class Generator:
 
-    def __init__(self, data_path="data.txt", model_name="model.json"):
+    def __init__(self, data_path="C:\\Users\\david\\OneDrive\\Documents\\Blablabot\\Api\\BlablaBot\\Api\\Generator\\data.txt", model_name="model.json"):
         self.__text = ""
         self.__text_model = None
 
@@ -36,9 +36,3 @@ class Generator:
     def load_training_data(self, path):
         with open(path, encoding="utf8") as f:
             self.__text = f.read()
-
-
-if __name__ == "__main__":
-    generator = Generator()
-    generator.build_model()
-    print(generator.generate())
