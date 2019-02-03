@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "module": "es6",
+    "moduleResolution": "node",
+    "target": "es5",
+    "jsx": "react",
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "lib": ["es2017", "dom"],
+    "types": ["webpack-env", "node"],
+    "noStrictGenericChecks": true,
+    "strictNullChecks": false
+  },
+  "exclude": [
+    "bin",
+    "node_modules"
+  ]
+}
